@@ -1,0 +1,21 @@
+﻿@model IEnumerable<ASPProject.Models.Anime>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center ">
+
+    <br />
+    @foreach (var item in Model)
+    {
+
+        <div class="float-left w-25 bg-info mr-3">
+            <div> @item.Name </div>
+            <div> @item.Name </div>
+            <div> @item.Name </div>
+            <a asp-action="Details" asp-route-id="@item.ID">Show</a>
+        </div>
+    }
+    <div></div>
+</div>
