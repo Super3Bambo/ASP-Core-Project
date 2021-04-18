@@ -1,6 +1,8 @@
 using ASPProject.Models;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,13 +33,19 @@ namespace ASPProject
             services.AddControllersWithViews();
             services.AddAuthorization();
             services.AddAuthentication();
-
-            services.AddDefaultIdentity<ApplicationUser>(o=> { o.Password.RequireNonAlphanumeric = false; 
-                o.Password.RequireUppercase = false;  o.Password.RequiredUniqueChars = 0;
-                o.SignIn.RequireConfirmedAccount = false; }).AddEntityFrameworkStores<Context>();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
+            });
             services.AddDbContext<Context>(options =>
-                    options.UseSqlServer(
-                        Configuration.GetConnectionString("conn")));
+             options.UseSqlServer(
+                 Configuration.GetConnectionString("conn")));
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            { 
+                options.Password.RequiredLength = 10;
+            }).AddEntityFrameworkStores<Context>();
+
+     
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

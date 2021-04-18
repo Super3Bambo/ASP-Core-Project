@@ -110,7 +110,7 @@ namespace ASPProject.Controllers
             }
             return Redirect($"Details/{id}");
         }
-
+        [HttpGet]
         public  IActionResult FilteredAnimes(string searchKey)
         {
            var x=  _context.Anime.Where(d => d.Name.StartsWith(searchKey)).ToList();

@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ASPProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
+    
+
     public class AnimesController : Controller
     {
         private readonly Context _context;
@@ -26,6 +28,7 @@ namespace ASPProject.Controllers
         // GET: Animes
         public async Task<IActionResult> Index()
         {  
+
             return View(await _context.Anime.ToListAsync());
         }
 
