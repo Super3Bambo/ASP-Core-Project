@@ -26,8 +26,8 @@ namespace ASPProject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Category")
-                        .HasColumnType("int");
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -51,9 +51,43 @@ namespace ASPProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isPremium")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
                     b.ToTable("Anime");
+                });
+
+            modelBuilder.Entity("ASPProject.Models.AnimeCategory", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnimeID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryID", "AnimeID");
+
+                    b.HasIndex("AnimeID");
+
+                    b.ToTable("AnimeCategories");
+                });
+
+            modelBuilder.Entity("ASPProject.Models.Category", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ASPProject.Models.UsersAnime", b =>
@@ -65,6 +99,9 @@ namespace ASPProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WatchingStatus")
                         .HasColumnType("int");
 
                     b.HasKey("UserID", "AnimeID");
@@ -292,6 +329,25 @@ namespace ASPProject.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
+            modelBuilder.Entity("ASPProject.Models.AnimeCategory", b =>
+                {
+                    b.HasOne("ASPProject.Models.Anime", "Anime")
+                        .WithMany("animeCategories")
+                        .HasForeignKey("AnimeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASPProject.Models.Category", "Category")
+                        .WithMany("animeCategories")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Anime");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("ASPProject.Models.UsersAnime", b =>
                 {
                     b.HasOne("ASPProject.Models.Anime", "Anime")
@@ -364,7 +420,14 @@ namespace ASPProject.Migrations
 
             modelBuilder.Entity("ASPProject.Models.Anime", b =>
                 {
+                    b.Navigation("animeCategories");
+
                     b.Navigation("UsersAnimeList");
+                });
+
+            modelBuilder.Entity("ASPProject.Models.Category", b =>
+                {
+                    b.Navigation("animeCategories");
                 });
 
             modelBuilder.Entity("ASPProject.Models.ApplicationUser", b =>

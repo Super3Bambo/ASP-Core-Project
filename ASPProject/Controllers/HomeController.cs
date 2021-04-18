@@ -90,11 +90,9 @@ namespace ASPProject.Controllers
             return Redirect($"Details/{id}");
         }
         
-
             [HttpPost]
         public async Task<IActionResult> RateIT(int id ,  int Rating)
         {
-            
             UsersAnime usersAnime = new UsersAnime();
             if (User.Identity.IsAuthenticated)
             {
@@ -116,7 +114,6 @@ namespace ASPProject.Controllers
            var x=  _context.Anime.Where(d => d.Name.StartsWith(searchKey)).ToList();
             return View(x);
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

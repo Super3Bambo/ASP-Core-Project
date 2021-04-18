@@ -16,5 +16,10 @@ namespace ASPProject.Models
         public int AnimeID { get; set; }
         public virtual Anime Anime { get; set; }
         public int Rating { get; set; }
+        public WatchingStatus WatchingStatus { get; set; }
+    }
+    public enum WatchingStatus
+    {
+        Watching, Completed, On_Hold, Dropped, ToWatch
     }
 }

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ASPProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ASPProject.Controllers
 {
@@ -18,11 +20,13 @@ namespace ASPProject.Controllers
     {
         private readonly Context _context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public AnimesController(Context context , UserManager<ApplicationUser> user)
+        public AnimesController(Context context , UserManager<ApplicationUser> user , IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             userManager = user;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Animes
@@ -64,19 +68,25 @@ namespace ASPProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Category,Rating,ReleaseYear,State,Studios,Plot")] Anime anime)
+        public async Task<IActionResult> Create( Anime anime)
         {
             if (ModelState.IsValid)
             {
+                string wwwRootPath = webHostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(anime.ImageFile.FileName);
+                string extension = Path.GetExtension(anime.ImageFile.FileName);
+                anime.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/images", fileName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await anime.ImageFile.CopyToAsync(fileStream);
+                }
                 _context.Add(anime);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(anime);
-        }
-        [HttpPost]
-        
-
+        }        
         // GET: Animes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -84,7 +94,6 @@ namespace ASPProject.Controllers
             {
                 return NotFound();
             }
-
             var anime = await _context.Anime.FindAsync(id);
             if (anime == null)
             {
@@ -98,11 +107,29 @@ namespace ASPProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Category,Rating,ReleaseYear,State,Studios,Plot")] Anime anime)
+        public async Task<IActionResult> Edit(int id,  Anime anime)
         {
             if (id != anime.ID)
             {
                 return NotFound();
+            }
+            if (anime.ImageFile != null || anime.ImageFile.Length != 0)
+            {
+                var imagePath = Path.Combine(webHostEnvironment.WebRootPath, "images", anime.ImageName);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+                string wwwRootPath = webHostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(anime.ImageFile.FileName);
+                string extension = Path.GetExtension(anime.ImageFile.FileName);
+                anime.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/images", fileName);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await anime.ImageFile.CopyToAsync(fileStream);
+                }
             }
 
             if (ModelState.IsValid)
@@ -152,6 +179,11 @@ namespace ASPProject.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var anime = await _context.Anime.FindAsync(id);
+            var imagePath = Path.Combine(webHostEnvironment.WebRootPath, "images", anime.ImageName);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
             _context.Anime.Remove(anime);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
