@@ -1,50 +1,54 @@
-﻿@model ASPProject.Models.GetCatAnimes
+﻿@model List<ASPProject.Models.GetCatAnimes>
 
 <h1 class="bg-info text-white">Add Anime</h1>
 <a asp-action="Index" class="btn btn-secondary">Back</a>
 <div asp-validation-summary="All" class="text-danger"></div>
 
-<form method="post" asp-action="AddAnimes">
-    <input type="hidden" asp-for="Category" value="@Model.Category" />
+<form method="post">
 
-    <h2 class="bg-info p-1 text-white">Add To @Model.Category.Name</h2>
+
+    <h2 class="bg-info p-1 text-white">Add To @Model[0].CatName</h2>
     <table class="table table-bordered table-sm">
-        @if (Model.NotMember.Count() == 0)
+
+        @for (int i = 0; i < Model.Count; i++)
         {
-            <tr><td colspan="2">All Users Are Members</td></tr>
-        }
-        else
+
+                @if (Model[i].IsSelected == false)
+                {
+                    <tr>
+                        <td>@Model[i].AnimeName</td>
+                        <td>
+                            <input type="hidden" asp-for="@Model[i].CatID" />
+                            <input type="hidden" asp-for="@Model[i].AnimeID" />
+                            <input asp-for="@Model[i].IsSelected" class="form-check-input" />
+
+                        </td>
+                    </tr>
+                }
+}
+
+    </table>
+
+    <h2 class="bg-info p-1 text-white">Remove From @Model[0].CatName</h2>
+    <table class="table table-bordered table-sm">
+        @for (int i = 0; i < Model.Count; i++)
         {
-            @foreach (Anime anime in Model.NotMember)
+
+            @if (Model[i].IsSelected == true)
             {
                 <tr>
-                    <td>@anime.Name</td>
+                    <td>@Model[i].AnimeName</td>
                     <td>
-                        <input type="checkbox" name="delete" value="@anime.ID">
+                        <input type="hidden" asp-for="@Model[i].CatID" />
+                        <input type="hidden" asp-for="@Model[i].AnimeID" />
+                        <input asp-for="@Model[i].IsSelected" class="form-check-input" />
+
                     </td>
                 </tr>
             }
         }
-    </table>
 
-    <h2 class="bg-info p-1 text-white">Remove From @Model.Category.Name</h2>
-    <table class="table table-bordered table-sm">
-        @if (Model.Member.Count() == 0)
-        {
-            <tr><td colspan="2">No Users Are Members</td></tr>
-        }
-        else
-        {
-            @foreach (Anime anime in Model.Member)
-            {
-                <tr>
-                    <td>@anime.Name</td>
-                    <td>
-                        <input type="checkbox" name="add" value="@anime.ID">
-                    </td>
-                </tr>
-            }
-        }
+
     </table>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <input type="submit" class="btn btn-primary" value="Save"/>
 </form>

@@ -14,8 +14,6 @@ using System.IO;
 namespace ASPProject.Controllers
 {
     [Authorize(Roles ="Admin")]
-    
-
     public class AnimesController : Controller
     {
         private readonly Context _context;
@@ -30,8 +28,26 @@ namespace ASPProject.Controllers
         }
 
         // GET: Animes
-        public async Task<IActionResult> Index()
-        {  
+        [AllowAnonymous]
+        [Authorize(Roles ="Client")]
+        public async Task<IActionResult> MyList()
+        {
+            List<Anime> animes = new List<Anime>();
+            if (User.Identity.IsAuthenticated)
+            {
+            var user= await userManager.FindByIdAsync( userManager.GetUserId(User));
+              var useranimes =  _context.UsersAnime.Where(oo=>oo.UserID==user.Id).ToList();
+
+                foreach (var item in useranimes)
+                {
+                    animes.Add(_context.Anime.FirstOrDefault(oo=>oo.ID==item.AnimeID));
+                }
+            }
+            return View(animes);
+        }
+
+        public async Task<IActionResult> Index ()
+        {
 
             return View(await _context.Anime.ToListAsync());
         }

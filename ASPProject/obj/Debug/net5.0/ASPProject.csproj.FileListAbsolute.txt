@@ -553,3 +553,4 @@ C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Cat
 C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Categories\Edit.cshtml.g.cs
 C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Categories\Index.cshtml.g.cs
 C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Categories\AddAnimes.cshtml.g.cs
+C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Animes\MyList.cshtml.g.cs

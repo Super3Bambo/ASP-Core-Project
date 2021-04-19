@@ -154,22 +154,63 @@ namespace ASPProject.Controllers
             var cat = _context.Categories.Find(id);
             var x = _context.AnimeCategories.Where(oo => oo.CategoryID == id).ToList();
             List<Anime> Memberanimes = new List<Anime>();
+            List<GetCatAnimes> animes = new List<GetCatAnimes>();
             foreach (var item in x)
             {
                 var y = _context.Anime.Find(item.AnimeID);
                 if (y != null)
+                {
+                    var obj = new GetCatAnimes();
+                    obj.CatName = cat.Name;
+                    obj.CatID = item.CategoryID.ToString();
+                    obj.AnimeID = y.ID.ToString();
+                    obj.AnimeName = y.Name;
+                    obj.IsSelected = true;
                     Memberanimes.Add(y);
+                    animes.Add(obj);
+
+                }
 
             }
             var notIn = await _context.Anime.ToListAsync();
             var NonMemberanimes = notIn.Except(Memberanimes).ToList();
+            foreach (var item in NonMemberanimes)
+            {
+                var obj = new GetCatAnimes();
+                obj.CatName = cat.Name;
+                obj.CatID = cat.ID.ToString();
+                obj.AnimeID = item.ID.ToString();
+                obj.AnimeName = item.Name;
+                obj.IsSelected = false;
+                animes.Add(obj);
+            }
 
-            return View(new GetCatAnimes() { Category = cat, Member = Memberanimes, NotMember = NonMemberanimes });
+            return View(animes);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAnimes(GetCatAnimes model )
+        public  ActionResult AddAnimes( List< GetCatAnimes> model)
         {
+           // int Catid =int.Parse( model[0].CatID);
+            for(int i=0; i< model.Count;  i++)
+            {
+                var x = new AnimeCategory()
+                {
+                    AnimeID = int.Parse(model[i].AnimeID),
+                    CategoryID = int.Parse(model[i].CatID)
+                };
+                var obj = _context.AnimeCategories.AsNoTracking().FirstOrDefault(oo=>oo.AnimeID==x.AnimeID&& oo.CategoryID==x.CategoryID);
+
+                if (model[i].IsSelected && obj==null ) {
+                    _context.AnimeCategories.Add(x);
+                }
+                else if (! model[i].IsSelected && obj != null) {
+                   
+                    _context.AnimeCategories.Remove(x);
+                }
+
+                _context.SaveChanges();
+            }
 
             return RedirectToAction("");
 

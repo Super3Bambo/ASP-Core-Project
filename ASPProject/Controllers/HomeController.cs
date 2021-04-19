@@ -33,7 +33,7 @@ namespace ASPProject.Controllers
         {
             return View(await _context.Anime.ToListAsync());
         }
-
+        //[Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             var user = await userManager.GetUserAsync(User);
@@ -44,8 +44,11 @@ namespace ASPProject.Controllers
 
             var anime = await _context.Anime
                 .FirstOrDefaultAsync(m => m.ID == id);
-            var x = _context.UsersAnime.FirstOrDefault(f => f.AnimeID == id && f.UserID == user.Id);
-            ViewBag.checklike = x;
+            if (user!=null) 
+            { 
+                var x = _context.UsersAnime.FirstOrDefault(f => f.AnimeID == id && f.UserID == user.Id);
+                ViewBag.checklike = x;
+            }
             if (anime == null)
             {
                 return NotFound();
@@ -67,6 +70,28 @@ namespace ASPProject.Controllers
                     _context.UsersAnime.Remove(x);
                     _context.SaveChanges();
                 }
+
+                var list = _context.UsersAnime.ToList();
+                decimal totalrating = 0;
+                int numofusers = 0;
+                for (int i = 0; i < list.Count; i++)
+                {
+
+                    if (list[i].Rating != 0)
+                    {
+                        totalrating += list[i].Rating;
+                        numofusers++;
+                    }
+                }
+                totalrating = totalrating / numofusers;
+                var anime = _context.Anime.AsNoTracking().FirstOrDefault(oo => oo.ID == id);
+                if (anime != null)
+                {
+                    anime.Rating = totalrating;
+                    _context.Anime.Update(anime);
+                    _context.SaveChanges();
+                }
+
             }
             return Redirect("Details/" + id);
         }
@@ -104,6 +129,28 @@ namespace ASPProject.Controllers
                     usersAnime.Rating = Rating;
                     _context.UsersAnime.Update(usersAnime);
                     _context.SaveChanges();
+
+                    var list = _context.UsersAnime.ToList();
+                    decimal totalrating=0;
+                    int numofusers = 0;
+                    for (int i =0; i< list.Count; i++) {
+
+                        if (list[i].Rating != 0)
+                        {
+                            totalrating += list[i].Rating;
+                            numofusers++;
+                        }
+                    }
+                    
+                    totalrating = totalrating / numofusers;
+                    var anime =  _context.Anime.AsNoTracking().FirstOrDefault(oo=>oo.ID==id);
+                    if (anime != null)
+                    {
+                        anime.Rating = totalrating;
+                        _context.Anime.Update(anime);
+                        _context.SaveChanges();
+                    }
+
                 }
             }
             return Redirect($"Details/{id}");

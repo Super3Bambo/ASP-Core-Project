@@ -31,21 +31,25 @@ namespace ASPProject
         {
             services.AddRazorPages();
             services.AddControllersWithViews();
-            services.AddAuthorization();
-            services.AddAuthentication();
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
-            });
+            
+            
             services.AddDbContext<Context>(options =>
              options.UseSqlServer(
                  Configuration.GetConnectionString("conn")));
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             { 
-                options.Password.RequiredLength = 10;
+                options.Password.RequireLowercase =false;
+                options.Password.RequireUppercase =false;
+                options.Password.RequireDigit =false;
             }).AddEntityFrameworkStores<Context>();
 
-     
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/Identity/Account/Login");
+                options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
+            });
+            services.AddAuthorization();
+            services.AddAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
