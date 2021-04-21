@@ -44,7 +44,7 @@ namespace ASPProject.Areas.Identity.Pages.Account.Manage
             OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
                 .Where(auth => CurrentLogins.All(ul => auth.Name != ul.LoginProvider))
                 .ToList();
-            ShowRemoveButton = user.PasswordHash != null || CurrentLogins.Count > 1;
+            ShowRemoveButton = user.PasswordHash == null || CurrentLogins.Count > 1;
             return Page();
         }
 
@@ -55,8 +55,9 @@ namespace ASPProject.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID 'user.Id'.");
             }
-
             var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
+           
+
             if (!result.Succeeded)
             {
                 StatusMessage = "The external login was not removed.";
@@ -65,7 +66,9 @@ namespace ASPProject.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "The external login was removed.";
-            return RedirectToPage();
+            var res = await _userManager.DeleteAsync(user);
+            await _signInManager.SignOutAsync();
+            return Redirect("/");
         }
 
         public async Task<IActionResult> OnPostLinkLoginAsync(string provider)
