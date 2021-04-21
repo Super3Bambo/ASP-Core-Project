@@ -1135,3 +1135,10 @@ C:\Users\101\Desktop\ASP-Core-Project-master\ASPProject\obj\Debug\net5.0\Razor\V
 C:\Users\101\Desktop\ASP-Core-Project-master\ASPProject\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.Facebook.dll
 C:\Users\101\Desktop\ASP-Core-Project-master\ASPProject\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Account\ExternalLogin.cshtml.g.cs
 C:\Users\101\Desktop\ASP-Core-Project-master\ASPProject\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Account\Manage\ExternalLogins.cshtml.g.cs
+C:\Users\101\source\repos\ASPProject\ASPProject\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.Facebook.dll
+C:\Users\101\source\repos\ASPProject\ASPProject\bin\Debug\net5.0\Stripe.net.dll
+C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Account\ExternalLogin.cshtml.g.cs
+C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Account\Manage\ExternalLogins.cshtml.g.cs
+C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Categories\AllCategories.cshtml.g.cs
+C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Categories\CategoryAnime.cshtml.g.cs
+C:\Users\101\source\repos\ASPProject\ASPProject\obj\Debug\net5.0\Razor\Views\Premium\Index.cshtml.g.cs
