@@ -52,7 +52,7 @@
         <form asp-action="removefromList">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
-            <input type="submit" style="width:100px" class="btn btn-primary" value="Unlike" />
+            <input type="submit"  class="btn btn-primary" value="Unlike" />
         </form>
     </div>
     <div class="ml-4">
@@ -60,8 +60,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="row">
-                <input type="number" style="width:100px" class="form-control mr-3" name="Rating" />
-                <input type="submit" style="width:70px" class="form-control" value="Rate" />
+                <select class="form-control mr-3 col-4" name="WatchingStatus" asp-items="Html.GetEnumSelectList<WatchingStatus>()"></select>
+
+                <input type="number" class="form-control mr-3 col-3" name="Rating" />
+                <input type="submit" class="form-control col-3" value="Rate" />
             </div>
         </form>
     </div>
@@ -82,7 +84,7 @@
                         <div class="modal-header">
                             <h4 class="modal-title">Modal title</h4>
                         </div>
-                                    <div class="modal-body">
+                                    <div style="word-break:break-all; line-height:30px" class="modal-body">
                                        @Model.Story
                                     </div>
                                                 <div class="modal-footer">

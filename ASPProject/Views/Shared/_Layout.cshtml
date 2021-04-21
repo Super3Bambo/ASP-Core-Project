@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject UserManager<ApplicationUser> usermanager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,51 +9,60 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-danger border-bottom box-shadow mb-3 text-white">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AnimeList</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Categories" asp-action="AllCategories">Categories</a>
-                        </li>
-                        @if (User.Identity.IsAuthenticated) {
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Animes" asp-action="MyList">My Anime List</a>
-                        </li>}
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-action="Index" asp-controller="Premium">Go <span style="color:goldenrod">Premuim </span>Now!</a>
-                        </li>
-                        
-                    </ul>
-                </div>
-                <partial name="_LoginPartial.cshtml" />
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    @{
+        var user = await usermanager.GetUserAsync(User);
+        var prem = user.isPermium;
+<header>
 
-    <footer class="border-top footer bg-danger text-white">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-danger border-bottom box-shadow mb-3 text-white">
         <div class="container">
-            &copy; 2021 - Anime List 
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@if (prem) {<span style="color:goldenrod">AnimeList</span> } else {<span>Anime</span><span>List</span> }</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-white " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-area="" asp-controller="Categories" asp-action="AllCategories">Categories</a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+        <li class="nav-item">
+            <a class="nav-link text-white" asp-area="" asp-controller="Animes" asp-action="MyList">My Anime List</a>
+        </li>
+                    }
+
+                    @if (!prem) {
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-area="" asp-action="Index" asp-controller="Premium">Go <span style="color:goldenrod">Premuim </span>Now!</a>
+                    </li>}
+                    
+                </ul>
+            </div>
+            <partial name="_LoginPartial.cshtml" />
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+    </nav>
+</header>
+    }
+            <div class="container">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+
+                        <footer class="border-top footer bg-danger text-white">
+                            <div class="container">
+                                &copy; 2021 - Anime List
+                            </div>
+                        </footer>
+                                    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                                                <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+                                                            <script src="~/js/site.js" asp-append-version="true"></script>
+                                                                        @await RenderSectionAsync("Scripts", required: false)
+                                                                                </body>
 </html>

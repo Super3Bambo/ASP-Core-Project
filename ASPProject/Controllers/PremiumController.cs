@@ -42,7 +42,7 @@ namespace ASPProject.Controllers
                 {
                     City = CurUser.City,
                     State = CurUser.State,
-                    Country = CurUser.Country,
+                    Country = "US",
                     PostalCode = "11511",
                     Line1 = "Line1",
                     Line2 = "Line2"

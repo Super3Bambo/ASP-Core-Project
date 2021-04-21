@@ -34,7 +34,11 @@ namespace ASPProject
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
-
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "489438948862600";
+                options.AppSecret = "5023f2cf74446adefef661cc1131cb44";
+            });
             services.AddDbContext<Context>(options =>
              options.UseSqlServer(
                  Configuration.GetConnectionString("conn")));

@@ -42,8 +42,8 @@ namespace ASPProject.Models
         public virtual ICollection<AnimeCategory> animeCategories { get; set; }
 
     }
-    /*
-    public enum Category
+    
+    public enum Categorys
     {
         Comedy,
         Drama,
@@ -57,7 +57,7 @@ namespace ASPProject.Models
         Isekai,
         Mecha,
         Action
-    }*/
+    }
     public enum Status
     {
         Airing,

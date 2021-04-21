@@ -127,7 +127,6 @@ namespace ASPProject.Controllers
                 }
                 else {
                 totalrating = totalrating / numofusers;
-
                 }
                 var anime = _context.Anime.AsNoTracking().FirstOrDefault(oo => oo.ID == id);
                 if (anime != null)
@@ -188,8 +187,15 @@ namespace ASPProject.Controllers
                             numofusers++;
                         }
                     }
-                    
-                    totalrating = totalrating / numofusers;
+
+                    if (numofusers == 0)
+                    {
+                        totalrating = 0;
+                    }
+                    else
+                    {
+                        totalrating = totalrating / numofusers;
+                    }
                     var anime =  _context.Anime.AsNoTracking().FirstOrDefault(oo=>oo.ID==id);
                     if (anime != null)
                     {
@@ -203,12 +209,30 @@ namespace ASPProject.Controllers
             return Redirect($"Details/{id}");
         }
         [Authorize(Roles = "Client")]
-        [HttpGet]
-        public  IActionResult FilteredAnimes(string searchKey)
+        //[HttpGet]
+        public  IActionResult FilteredAnimes(string searchKey,string Cat)
         {
-           var x=  _context.Anime.Where(d => d.Name.StartsWith(searchKey)).ToList();
-            return View(x);
+           var Anime=  _context.Anime.Where(d => d.Name.StartsWith(searchKey)).ToList();
+            if (Cat==null)
+            {
+            }
+            else
+            {
+                var CatID = _context.Categories.FirstOrDefault(oo => oo.Name == Cat.Trim());
+                var CatAnime = _context.AnimeCategories.Where(oo => oo.CategoryID == CatID.ID).ToList();
+                List<Anime> animesInCat = new List<Anime>();
+                foreach (var item in CatAnime)
+                {
+                    var x = _context.Anime.FirstOrDefault(oo => oo.ID == item.AnimeID);
+                    animesInCat.Add(x);
+                }
+                var res = Anime.Intersect(animesInCat).ToList();
+                return View(res);
+            }
+            return View(Anime);
         }
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

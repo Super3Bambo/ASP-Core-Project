@@ -26,6 +26,47 @@ namespace ASPProject.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
+        private async Task<List<Anime>> sendStatus(WatchingStatus S)
+        {
+            List<Anime> anime = new List<Anime>();
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await userManager.FindByIdAsync(userManager.GetUserId(User));
+                var useranimes = _context.UsersAnime.Where(oo => oo.UserID == user.Id && oo.WatchingStatus == S).ToList();
+                foreach (var item in useranimes)
+                {
+                    anime.Add(_context.Anime.FirstOrDefault(oo => oo.ID == item.AnimeID));
+                }
+            }
+            return anime;
+        }
+        [HttpPost]
+        [Authorize(Roles = "Client")]
+
+        public async Task<IActionResult> MyList(int filter)
+        {
+            if (filter == 1)
+            {
+                return View(await sendStatus(WatchingStatus.Watching));
+            }
+            else if (filter == 2)
+            {
+                return View(await sendStatus(WatchingStatus.Completed));
+            }
+            else if (filter == 3)
+            {
+                return View(await sendStatus(WatchingStatus.On_Hold));
+            }
+            else if (filter == 4)
+            {
+                return View(await sendStatus(WatchingStatus.ToWatch));
+            }
+            else
+            {
+                return View(await sendStatus(WatchingStatus.Dropped));
+            }
+        }
+
         // GET: Animes
         [Authorize(Roles ="Client")]
         public async Task<IActionResult> MyList()
