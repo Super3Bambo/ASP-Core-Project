@@ -1,84 +1,242 @@
 ﻿@model ASPProject.Models.Anime
 
-@{
-    ViewData["Title"] = "Details";
-    
+@{ ViewData["Title"] = "Details"; }
+
+<div class="w-100">
+    <h2>Anime</h2>
+    <h4> <span class="text-danger">@Model.Name</span> Anime</h4>
+    <hr />
+
+</div>
+<div class="row p-0">
+    <div class="col-4 mr-3 p-0">
+        <img src="@("~/Images/"+Model.ImageName)" class="w-100" style="border-radius:20px; object-fit:cover; height:700px" asp-append-version="true" />
+
+    </div>
+    <div class="col-7    text-dark  p-0  font-weight-bolder">
+        <div class="offset-4 p-3">
+            <label class="w-25"> Name </label>
+            <label class=" w-25">  @Model.Name</label>
+        </div>
+
+        <div class="offset-4 p-3">
+            <label class="w-25"> Release </label>
+            <label class="w-25">  @Model.ReleaseYear</label>
+        </div>
+
+        <div class="offset-4 p-3">
+            <label class="w-25"> Rating </label>
+            <label class="w-25">  @Model.Rating</label>
+        </div>
+        <div class="offset-4 p-3">
+            <label class="w-25"> Category </label>
+            @foreach (var item in ViewBag.Cats)
+            {<label class="mr-1"> <a asp-action="CategoryAnime" asp-controller="Categories" asp-route-id="@item.ID"> @item.Name </a> </label>}
+        </div>
+        <div class="row p-0">
+            <div class="container">
+                <div class="w-100 offset-3">
+                    @if (ViewBag.checklike == null)
+                    {
+        <div class="offset-2">
+            <form asp-action="addtoList">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ID" />
+                <input type="submit" style="width:100px" class="btn btn-outline-primary" value="Like" />
+            </form>
+        </div> }
+    else
+    {
+<div class="row p-0 ">
+    <div class="mr-3">
+        <form asp-action="removefromList">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="submit" style="width:100px" class="btn btn-primary" value="Unlike" />
+        </form>
+    </div>
+    <div class="ml-4">
+        <form asp-action="RateIT">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="row">
+                <input type="number" style="width:100px" class="form-control mr-3" name="Rating" />
+                <input type="submit" style="width:70px" class="form-control" value="Rate" />
+            </div>
+        </form>
+    </div>
+</div>}
+                </div>
+            </div>
+
+        </div>
+        <div class="w-100 offset-5 mt-3">
+            @if (Model.isPremium)
+            {
+@if (ViewBag.checkPremium)
+{
+<div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @{
+                        <div class="modal-header">
+                            <h4 class="modal-title">Modal title</h4>
+                        </div>
+                                    <div class="modal-body">
+                                       @Model.Story
+                                    </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                                </div> 
+                                                                            }
+        </div>
+    </div>
+</div>
+                    <button id='open' class="btn btn-outline-info popup" data-toggle="modal" data-target="#showmodal">Read Story</button> }
+                else
+                {
+<a class="btn btn-outline-info" asp-action="Index" asp-controller="Premium">Read Story  </a>} }
+else
+{
+
+<div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @{
+                                <div class="modal-header">
+                                    <h4 class="modal-title">@Model.Name Story</h4>
+                                </div>
+                                                <div  style="word-break:break-all; line-height:30px" class= "modal-body">
+                                                    @Model.Story
+                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                                                </div> }
+        </div>
+    </div>
+</div>
+                <button id='open' class="btn btn-outline-info popup" data-toggle="modal" data-target="#showmodal">Read Story</button>}
+        </div>
+        <hr />
+
+        <div class="mb-2 offset-1">
+            recommend List
+        </div>
+        <div class="row p-0">
+            <div class="container">
+
+                @foreach (var item in ViewBag.Animes)
+                {
+    <div id="img" class="float-left col-4 pr-4 mb-3">
+        <div class="w-100 text-center" style="position:relative">
+            <a asp-action="Details" asp-route-id="@item.ID">
+                <img src="@("~/Images/"+ item.ImageName)" style="border-radius:20px; object-fit:cover" height="270" class="w-100" asp-append-version="true" />
+                <label style="position:absolute; left:2%; bottom:0%;" class="text-white"> @item.Name </label>
+            </a>
+        </div>
+    </div>}
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts{
+    <script src="~/js/story.js" asp-append-version="true"></script>
 }
 
-<h1>Details</h1>
+@*<h1>Details</h1>
 
-<div>
-    <h4>Anime</h4>
-    <hr />
+    <div>
+        <h4>Anime</h4>
+        <hr />
+        @if (ViewBag.checkPremium)
+        {
+            <button class="btn btn-primary">Purchase</button>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Index" asp-controller="Premium">Go Premium</a>
+        }
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rating)
+        <dd class="col-sm-10">
+            @if (Model.Rating == 0)
+            {
+    <label>-</label> }
+                else
+                {
+    @Html.DisplayFor(model => model.Rating)}
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ReleaseYear)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ReleaseYear)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.State)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.State)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Studios)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Studios)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Plot)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Plot)
         </dd>
+        @foreach (var item in ViewBag.Cats)
+        {
+            <div>@item.Name  </div>
+        }
 
         <dt>
         <dd>
-            @if (User.Identity.IsAuthenticated) {
+            @foreach (var item in ViewBag.Animes)
+            {
+        <div>@item.Name  </div>}
+
             @if (ViewBag.checklike == null)
             {
-                <form asp-action="addtoList">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="ID" />
-                    <input type="submit" value="Like" />
-                </form>}
-            else 
-            {
-                <form asp-action="removefromList">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="ID" />
-                    <input type="submit" value="Unlike" />
-                </form>
-                <br />
-                <form asp-action="RateIT">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="ID" />
-                    <input type="number" name="Rating"/>
-                    <input type="submit" value="Rate"   />
-                </form>
-                } }
+        <form asp-action="addtoList">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="submit" value="Like" />
+        </form>}
+    else
+    {
+        <form asp-action="removefromList">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="submit" value="Unlike" />
+        </form>
+                        <br />
+                                        <form asp-action="RateIT">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input type="hidden" asp-for="ID" />
+                                            <input type="number" name="Rating" />
+                                            <input type="submit" value="Rate" />
+                                        </form>}
         </dd>
-            
-       
+
+
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>*@

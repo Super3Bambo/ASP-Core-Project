@@ -43,6 +43,16 @@
                 <span asp-validation-for="Plot" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="isPremium" class="control-label"></label>
+                <input asp-for="isPremium" type="checkbox" class="form-control d-inline" />
+                <span asp-validation-for="isPremium" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Story" class="control-label"></label>
+                <textarea asp-for="Story"  class="form-control d-inline" rows="5" style="resize:none" cols="12" ></textarea>
+                <span asp-validation-for="Story" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="ImageFile" class="control-label"></label>
                 <input asp-for="ImageFile" accept="image/*" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>

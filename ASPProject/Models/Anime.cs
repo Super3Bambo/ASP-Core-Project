@@ -35,7 +35,8 @@ namespace ASPProject.Models
         public IFormFile ImageFile { get; set; }
         [DefaultValue(false)]
         public bool isPremium { get; set; }
-
+        [DataType(DataType.MultilineText)]
+        public string Story { get; set; }
 
         public virtual ICollection<UsersAnime> UsersAnimeList { get; set; }
         public virtual ICollection<AnimeCategory> animeCategories { get; set; }

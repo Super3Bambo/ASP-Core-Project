@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iRR9RfJvSN+bwuZhwQx+UgIJyAkVMf+xSmGsYe/l0T8+M/CRg0dMpVSfeK0QPsgJt/t6ZpPNpAOhchTTq0pOMQ==",
+  "dgSpecHash": "rmYTxrWzKNjYtNm7lEGGokEZwyOb1k4c+t+DWwCB9oViIcY7NloJeWHMjZzoxdac46AXZ6sttBfQQxGvdkaj2g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\101\\source\\repos\\ASPProject\\ASPProject\\ASPProject.csproj",
+  "projectFilePath": "C:\\Users\\101\\Desktop\\ASP-Core-Project-master\\ASPProject\\ASPProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\101\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\5.0.5\\microsoft.aspnetcore.authentication.openidconnect.5.0.5.nupkg.sha512",
@@ -62,8 +62,9 @@
     "C:\\Users\\101\\.nuget\\packages\\microsoft.visualstudio.web.codegenerators.mvc\\5.0.2\\microsoft.visualstudio.web.codegenerators.mvc.5.0.2.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
-    "C:\\Users\\101\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
+    "C:\\Users\\101\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
+    "C:\\Users\\101\\.nuget\\packages\\stripe.net\\39.45.0\\stripe.net.39.45.0.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\system.collections.concurrent\\4.3.0\\system.collections.concurrent.4.3.0.nupkg.sha512",
     "C:\\Users\\101\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",

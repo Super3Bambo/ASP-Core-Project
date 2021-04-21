@@ -1,0 +1,20 @@
+﻿@model IEnumerable<ASPProject.Models.Anime>
+
+@{ ViewData["Title"] = "Categoey Anime"; }
+
+<div class="text-center ">
+    <h2>Category <span class="text-danger">@ViewBag.catName </span></h2>
+    <br />
+    @foreach (var item in Model)
+    {
+
+<div id="img" class="float-left w-25 pr-4 mb-3">
+    <div class="w-100 text-center" style="position:relative">
+        <a asp-action="Details" asp-controller="Home" asp-route-id="@item.ID">
+            <img src="@("~/Images/"+ item.ImageName)" style="border-radius:20px ;object-fit:cover" height="300" class="w-100" asp-append-version="true" />
+            <label style="position:absolute; left:2%; bottom:0%;" class="text-white"> @item.Name </label>
+        </a>
+    </div>
+</div>}
+    <div></div>
+</div>

@@ -1,54 +1,27 @@
 ﻿@model List<ASPProject.Models.GetCatAnimes>
 
-<h1 class="bg-info text-white">Add Anime</h1>
-<a asp-action="Index" class="btn btn-secondary">Back</a>
-<div asp-validation-summary="All" class="text-danger"></div>
-
 <form method="post">
-
-
-    <h2 class="bg-info p-1 text-white">Add To @Model[0].CatName</h2>
-    <table class="table table-bordered table-sm">
-
-        @for (int i = 0; i < Model.Count; i++)
-        {
-
-                @if (Model[i].IsSelected == false)
-                {
-                    <tr>
-                        <td>@Model[i].AnimeName</td>
-                        <td>
-                            <input type="hidden" asp-for="@Model[i].CatID" />
-                            <input type="hidden" asp-for="@Model[i].AnimeID" />
-                            <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-
-                        </td>
-                    </tr>
-                }
-}
-
-    </table>
-
-    <h2 class="bg-info p-1 text-white">Remove From @Model[0].CatName</h2>
-    <table class="table table-bordered table-sm">
-        @for (int i = 0; i < Model.Count; i++)
-        {
-
-            @if (Model[i].IsSelected == true)
+    <div class="card">
+        <div class="card-header">
+            <h2>Add or remove Anime from @Model[0].CatName</h2>
+        </div>
+        <div class="card-body">
+            @for (int i = 0; i < Model.Count; i++)
             {
-                <tr>
-                    <td>@Model[i].AnimeName</td>
-                    <td>
-                        <input type="hidden" asp-for="@Model[i].CatID" />
-                        <input type="hidden" asp-for="@Model[i].AnimeID" />
-                        <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-
-                    </td>
-                </tr>
-            }
-        }
-
-
-    </table>
-    <input type="submit" class="btn btn-primary" value="Save"/>
+<div class="form-check m-1">
+    <input type="hidden" asp-for="@Model[i].CatID" />
+    <input type="hidden" asp-for="@Model[i].AnimeID" />
+    <input asp-for="@Model[i].IsSelected" class="form-check-input" />
+    <label class="form-check-label" asp-for="@Model[i].IsSelected">
+        @Model[i].AnimeName
+    </label>
+</div>            }
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Update" class="btn btn-primary"
+                   style="width:auto" />
+            <a asp-action="Index"
+               class="btn btn-primary" style="width:auto">Cancel</a>
+        </div>
+    </div>
 </form>

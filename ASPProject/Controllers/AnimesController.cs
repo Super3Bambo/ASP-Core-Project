@@ -13,7 +13,6 @@ using System.IO;
 
 namespace ASPProject.Controllers
 {
-    [Authorize(Roles ="Admin")]
     public class AnimesController : Controller
     {
         private readonly Context _context;
@@ -28,7 +27,6 @@ namespace ASPProject.Controllers
         }
 
         // GET: Animes
-        [AllowAnonymous]
         [Authorize(Roles ="Client")]
         public async Task<IActionResult> MyList()
         {
@@ -45,6 +43,7 @@ namespace ASPProject.Controllers
             }
             return View(animes);
         }
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> Index ()
         {
@@ -53,6 +52,8 @@ namespace ASPProject.Controllers
         }
 
         // GET: Animes/Details/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Details(int? id)
         {
             var user = await userManager.GetUserAsync(User);
@@ -74,6 +75,8 @@ namespace ASPProject.Controllers
         }
 
         // GET: Animes/Create
+        [Authorize(Roles = "Admin")]
+
         public IActionResult Create()
         {
             return View();
@@ -102,8 +105,10 @@ namespace ASPProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(anime);
-        }        
+        }
         // GET: Animes/Edit/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -172,6 +177,8 @@ namespace ASPProject.Controllers
         }
 
         // GET: Animes/Delete/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

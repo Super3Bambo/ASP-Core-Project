@@ -47,6 +47,9 @@ namespace ASPProject.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
+                    b.Property<string>("Story")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Studios")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -320,11 +323,32 @@ namespace ASPProject.Migrations
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Firstname")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Lastname")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PremiumExpiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PremiumTransactionID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isPermium")
+                        .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });

@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace ASPProject.Controllers
 {
-    
+
+   // [Authorize(Roles = "Client")]
 
     public class HomeController : Controller
     {
@@ -41,13 +42,49 @@ namespace ASPProject.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.checkPremium = false;
             var anime = await _context.Anime
                 .FirstOrDefaultAsync(m => m.ID == id);
+          var cats=  _context.AnimeCategories.Where(oo=>oo.AnimeID==anime.ID);
+            List<Category> categories = new List<Category>();
+            foreach (var item in cats)
+            {
+                var x = _context.Categories.FirstOrDefault(oo=>oo.ID==item.CategoryID);
+                categories.Add(x);
+            }
+
+
+            ViewBag.Cats = categories;
+
+            var anmes = _context.Anime.Where(oo => oo.Name.Contains(anime.Name.Substring(0,1)));
+
+            List<Anime> animes = new List<Anime>();
+            
+                var anmList = _context.Anime.Where(oo => oo.ID != anime.ID).ToList();
+            if (anmList.Count > 3) {
+                for (int i = 0; i < 3; i++)
+                {
+                animes.Add(anmList[i]);
+                }
+            }
+            else
+            {
+                animes.AddRange(anmList);
+            }
+  
+
+
+            ViewBag.Animes = animes;
             if (user!=null) 
             { 
                 var x = _context.UsersAnime.FirstOrDefault(f => f.AnimeID == id && f.UserID == user.Id);
                 ViewBag.checklike = x;
+                ViewBag.checkPremium = user.isPermium;
+                if(user.PremiumExpiration<DateTime.Now)
+                {
+                    user.isPermium = false;
+                    await userManager.UpdateAsync(user);
+                }
             }
             if (anime == null)
             {
@@ -57,6 +94,7 @@ namespace ASPProject.Controllers
             return View(anime);
         }
 
+        [Authorize(Roles = "Client")]
         public async Task<IActionResult> removefromList(int id)
         {
             UsersAnime usersAnime = new UsersAnime();
@@ -83,7 +121,14 @@ namespace ASPProject.Controllers
                         numofusers++;
                     }
                 }
+
+                if (numofusers == 0) {
+                    totalrating = 0;
+                }
+                else {
                 totalrating = totalrating / numofusers;
+
+                }
                 var anime = _context.Anime.AsNoTracking().FirstOrDefault(oo => oo.ID == id);
                 if (anime != null)
                 {
@@ -95,7 +140,7 @@ namespace ASPProject.Controllers
             }
             return Redirect("Details/" + id);
         }
-
+        [Authorize(Roles = "Client")]
         [HttpPost]
         public async Task<IActionResult> addtoList(int id)
         {
@@ -110,12 +155,14 @@ namespace ASPProject.Controllers
                     usersAnime.Rating = 0;
                     _context.UsersAnime.Add(usersAnime);
                     _context.SaveChanges();
+                    return Redirect($"Details/{id}");
+
                 }
             }
-            return Redirect($"Details/{id}");
+            return Redirect("/identity/account/login");
         }
-        
-            [HttpPost]
+        [Authorize(Roles = "Client")]
+        [HttpPost]
         public async Task<IActionResult> RateIT(int id ,  int Rating)
         {
             UsersAnime usersAnime = new UsersAnime();
@@ -155,6 +202,7 @@ namespace ASPProject.Controllers
             }
             return Redirect($"Details/{id}");
         }
+        [Authorize(Roles = "Client")]
         [HttpGet]
         public  IActionResult FilteredAnimes(string searchKey)
         {

@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASPProject.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASPProject.Controllers
 {
+   // [Authorize(Roles = "Admin")]
+
     public class CategoriesController : Controller
     {
         private readonly Context _context;
@@ -22,6 +25,26 @@ namespace ASPProject.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.ToListAsync());
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> AllCategories()
+        {
+            return View(await _context.Categories.ToListAsync());
+        }
+        [AllowAnonymous]
+        public IActionResult CategoryAnime(int id) {
+
+            var getCat = _context.Categories.FirstOrDefault(oo=>oo.ID==id);
+            ViewBag.catName = getCat.Name;
+            var getAnimes = _context.AnimeCategories.Where(oo=>oo.CategoryID==id);
+            List<Anime> animes = new List<Anime>();
+            foreach (var item in getAnimes)
+            {
+                var anime = _context.Anime.FirstOrDefault(oo => oo.ID == item.AnimeID);
+                animes.Add(anime);
+            }
+            
+            return View(animes);
         }
 
         // GET: Categories/Details/5

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\101\\source\\repos\\ASPProject\\ASPProject\\ASPProject.csproj": {}
+    "C:\\Users\\101\\Desktop\\ASP-Core-Project-master\\ASPProject\\ASPProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\101\\source\\repos\\ASPProject\\ASPProject\\ASPProject.csproj": {
+    "C:\\Users\\101\\Desktop\\ASP-Core-Project-master\\ASPProject\\ASPProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\101\\source\\repos\\ASPProject\\ASPProject\\ASPProject.csproj",
+        "projectUniqueName": "C:\\Users\\101\\Desktop\\ASP-Core-Project-master\\ASPProject\\ASPProject.csproj",
         "projectName": "ASPProject",
-        "projectPath": "C:\\Users\\101\\source\\repos\\ASPProject\\ASPProject\\ASPProject.csproj",
+        "projectPath": "C:\\Users\\101\\Desktop\\ASP-Core-Project-master\\ASPProject\\ASPProject.csproj",
         "packagesPath": "C:\\Users\\101\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\101\\source\\repos\\ASPProject\\ASPProject\\obj\\",
+        "outputPath": "C:\\Users\\101\\Desktop\\ASP-Core-Project-master\\ASPProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\101\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -71,6 +71,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[5.0.2, )"
+            },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[39.45.0, )"
             },
             "System.Configuration.ConfigurationManager": {
               "target": "Package",

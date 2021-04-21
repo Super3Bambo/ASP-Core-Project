@@ -74,10 +74,9 @@ namespace ASPProject.Areas.Identity.Pages.Account
             [DataType(DataType.DateTime)]
             [Display(Name = "BirthDay")]
             public DateTime BirthDay { get; set; }
-
-
-
-
+            public string City { get; set; }
+            public string State { get; set; }
+            public string Country { get; set; }
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -108,8 +107,8 @@ namespace ASPProject.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email , 
-                    Firstname = Input.FirstName , Lastname = Input.LastName , 
-                    Birthday = Input.BirthDay , PhoneNumber = Input.Phone };
+                    Firstname = Input.FirstName , Lastname = Input.LastName , City = Input.City , 
+                    State = Input.State , Country = Input.Country , Birthday = Input.BirthDay , PhoneNumber = Input.Phone };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

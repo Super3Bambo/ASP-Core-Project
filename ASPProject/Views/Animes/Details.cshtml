@@ -5,78 +5,72 @@
     
 }
 
-<h1>Details</h1>
+<h1>@Model.Name</h1>
 
 <div>
     <h4>Anime</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+            @*<img src="@("~/Images/" + Model.ImageName)" asp-append-version="true" class="w-25" />*@
+        <div class="w-50">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
 
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rating)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReleaseYear)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReleaseYear)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.State)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.State)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Studios)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Studios)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Plot)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Plot)
-        </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Rating)
+                </dt>
+                <dd class="col-sm-10">
+                    @if (Model.Rating == 0)
+                    {
+        <label>-</label> }
+    else
+    {
+        @Html.DisplayFor(model => model.Rating)}
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.ReleaseYear)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.ReleaseYear)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.State)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.State)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Studios)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Studios)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Plot)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Plot)
+                </dd>
 
-        <dt>
-        <dd>
-            @*@if (ViewBag.checklike==null)
-            {
-                <form asp-action="addtoList">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="ID" />
-
-
-                    <input type="submit" value="Like" />
-
-                </form>}
-            else
-            {
-        <form asp-action="removefromList">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+                <dt>
+                <dd>
+   
+                </dd>
 
 
-            <input type="submit" value="Unlike" />
-        </form>
-                    }*@
-            </dd>
-            
-     
-    </dl>
-</div>
+            </dl>
+
+
+        </div>
+        </div>
+
+    
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" class="btn btn-dark" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@Model.ID">Delete</a> |
+    <a asp-action="Index" class="btn btn-primary">Back</a>
 </div>
