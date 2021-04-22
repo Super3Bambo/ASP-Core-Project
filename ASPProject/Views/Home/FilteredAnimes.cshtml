@@ -7,7 +7,7 @@
 <div class="text-center ">
     <form asp-action="FilteredAnimes" method="get">
         <div class="row justify-content-center">
-            <input type="text" name="searchKey" class="form-control col-3 mr-3  mb-3" placeholder="Search For Your Animes" />
+            <input type="text" id="searchKey" name="searchKey" class="form-control col-3 mr-3  mb-3" placeholder="Search For Your Animes" />
             <select class="form-control col-2 mb-3" name="Cat">
                 <option value="">Select A Category</option>
                 <option value="Comedy">Comedy</option>
@@ -25,7 +25,8 @@
 
             </select>
         </div>
-        <input type="submit" value="Search" class="form-control col-6 btn btn-dark" />
+        
+        <input type="submit" id="sbtn" value="Search" class="form-control col-6 btn btn-dark" />
 
     </form>
     <br />
@@ -48,3 +49,5 @@
 </div>}}
     <div></div>
 </div>
+
+

@@ -1,4 +1,5 @@
 using ASPProject.Models;
+using ASPProject.Services;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +35,10 @@ namespace ASPProject
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
-            
+            services.AddScoped<IMangerServices<UsersAnime>, UsersAnimeService>();
+            services.AddScoped<IMangerServices<Anime>, AnimeService>();
+            services.AddScoped<IMangerServices<Category>, CategoryService>();
+            services.AddScoped<IMangerServices<AnimeCategory>, AnimeCategoriesService>();
             services.AddDbContext<Context>(options =>
              options.UseSqlServer(
                  Configuration.GetConnectionString("conn")));

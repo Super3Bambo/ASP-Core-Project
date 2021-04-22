@@ -16,12 +16,12 @@ namespace ASPProject.Controllers
     public class PremiumController : Controller
     {
         private readonly IHttpContextAccessor Accessor;
-        private readonly UserManager<ApplicationUser> User;
+        private readonly UserManager<ApplicationUser> user;
         public string ID;
         public PremiumController(IHttpContextAccessor accessor, UserManager<ApplicationUser> myUser)
         {
             this.Accessor = accessor;
-            this.User = myUser;
+            this.user = myUser;
             this.ID = Accessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).ToString().Split(" ")[1];
         }
         public IActionResult Index()
@@ -30,7 +30,7 @@ namespace ASPProject.Controllers
         }
         public async Task<IActionResult> Charge(string stripeEmail, string stripeToken)
         {
-            var CurUser = await User.FindByIdAsync(ID);
+            var CurUser = await user.FindByIdAsync(ID);
             var customers = new CustomerService();
             var charges = new ChargeService();
             var customer = customers.Create(new CustomerCreateOptions
@@ -61,7 +61,7 @@ namespace ASPProject.Controllers
                 CurUser.PremiumTransactionID = charge.BalanceTransactionId;
                 CurUser.isPermium = true;
                 CurUser.PremiumExpiration = DateTime.Now.AddDays(30);
-                await User.UpdateAsync(CurUser);
+                await user.UpdateAsync(CurUser);
                 return Redirect("/Home/Index");
             }
             else

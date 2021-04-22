@@ -10,20 +10,23 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using ASPProject.Services;
 
 namespace ASPProject.Controllers
 {
     public class AnimesController : Controller
     {
-        private readonly Context _context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMangerServices<UsersAnime> userAnimeService;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IMangerServices<Anime> animeService;
 
-        public AnimesController(Context context , UserManager<ApplicationUser> user , IWebHostEnvironment webHostEnvironment)
+        public AnimesController(UserManager<ApplicationUser> user, IMangerServices<UsersAnime> userAnimeService , IWebHostEnvironment webHostEnvironment,IMangerServices<Anime> animeService)
         {
-            _context = context;
             userManager = user;
+            this.userAnimeService = userAnimeService;
             this.webHostEnvironment = webHostEnvironment;
+            this.animeService = animeService;
         }
 
         private async Task<List<Anime>> sendStatus(WatchingStatus S)
@@ -32,10 +35,12 @@ namespace ASPProject.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var user = await userManager.FindByIdAsync(userManager.GetUserId(User));
-                var useranimes = _context.UsersAnime.Where(oo => oo.UserID == user.Id && oo.WatchingStatus == S).ToList();
-                foreach (var item in useranimes)
+                var useranimes = await userAnimeService.GetAll();
+                var users=useranimes.Where(oo => oo.UserID == user.Id && oo.WatchingStatus == S).ToList();
+                foreach (var item in users)
                 {
-                    anime.Add(_context.Anime.FirstOrDefault(oo => oo.ID == item.AnimeID));
+                    //anime.Add(_context.Anime.FirstOrDefault(oo => oo.ID == item.AnimeID));
+                    anime.Add(await animeService.GetDetails(item.AnimeID));
                 }
             }
             return anime;
@@ -75,11 +80,13 @@ namespace ASPProject.Controllers
             if (User.Identity.IsAuthenticated)
             {
             var user= await userManager.FindByIdAsync( userManager.GetUserId(User));
-              var useranimes =  _context.UsersAnime.Where(oo=>oo.UserID==user.Id).ToList();
+                var useranimes = await userAnimeService.GetAll();
+                var users=useranimes.Where(oo=>oo.UserID==user.Id).ToList();
 
-                foreach (var item in useranimes)
+                foreach (var item in users)
                 {
-                    animes.Add(_context.Anime.FirstOrDefault(oo=>oo.ID==item.AnimeID));
+                    // animes.Add(_context.Anime.FirstOrDefault(oo=>oo.ID==item.AnimeID));
+                    animes.Add(await animeService.GetDetails(item.AnimeID));
                 }
             }
             return View(animes);
@@ -89,23 +96,23 @@ namespace ASPProject.Controllers
         public async Task<IActionResult> Index ()
         {
 
-            return View(await _context.Anime.ToListAsync());
+            //  return View(await _context.Anime.ToListAsync());
+            return View(await animeService.GetAll());
         }
 
         // GET: Animes/Details/5
         [Authorize(Roles = "Admin")]
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
             var user = await userManager.GetUserAsync(User);
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var anime = await _context.Anime
-                .FirstOrDefaultAsync(m => m.ID == id);
-          var x =   _context.UsersAnime.FirstOrDefault(f=>f.AnimeID == id && f.UserID == user.Id);
+
+            /*   var anime = await _context.Anime
+                   .FirstOrDefaultAsync(m => m.ID == id);*/
+            var anime = await animeService.GetDetails(id);
+            var x = await userAnimeService.GetAll();
+            var y=x.FirstOrDefault(f=>f.AnimeID == id && f.UserID == user.Id);
             ViewBag.checklike = x;
             if (anime == null)
             {
@@ -141,8 +148,7 @@ namespace ASPProject.Controllers
                 {
                     await anime.ImageFile.CopyToAsync(fileStream);
                 }
-                _context.Add(anime);
-                await _context.SaveChangesAsync();
+                await animeService.Insert(anime);
                 return RedirectToAction(nameof(Index));
             }
             return View(anime);
@@ -150,13 +156,10 @@ namespace ASPProject.Controllers
         // GET: Animes/Edit/5
         [Authorize(Roles = "Admin")]
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var anime = await _context.Anime.FindAsync(id);
+
+            var anime = await animeService.GetDetails(id);
             if (anime == null)
             {
                 return NotFound();
@@ -198,8 +201,7 @@ namespace ASPProject.Controllers
             {
                 try
                 {
-                    _context.Update(anime);
-                    await _context.SaveChangesAsync();
+                   await animeService.Update(anime);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -220,15 +222,11 @@ namespace ASPProject.Controllers
         // GET: Animes/Delete/5
         [Authorize(Roles = "Admin")]
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var anime = await _context.Anime
-                .FirstOrDefaultAsync(m => m.ID == id);
+
+            var anime = await animeService.GetDetails(id);
             if (anime == null)
             {
                 return NotFound();
@@ -242,20 +240,19 @@ namespace ASPProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var anime = await _context.Anime.FindAsync(id);
+            var anime = await animeService.GetDetails(id);
             var imagePath = Path.Combine(webHostEnvironment.WebRootPath, "images", anime.ImageName);
             if (System.IO.File.Exists(imagePath))
             {
                 System.IO.File.Delete(imagePath);
             }
-            _context.Anime.Remove(anime);
-            await _context.SaveChangesAsync();
+            await animeService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AnimeExists(int id)
+        private  bool AnimeExists(int id)
         {
-            return _context.Anime.Any(e => e.ID == id);
+            return  animeService.GetAllNotAsync().Any(e => e.ID == id);
         }
     }
 }

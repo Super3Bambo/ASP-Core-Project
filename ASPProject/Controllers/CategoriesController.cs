@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASPProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using ASPProject.Services;
 
 namespace ASPProject.Controllers
 {
@@ -14,33 +15,38 @@ namespace ASPProject.Controllers
 
     public class CategoriesController : Controller
     {
-        private readonly Context _context;
+        private readonly IMangerServices<Anime> animeService;
+        private readonly IMangerServices<Category> categoryService;
+        private readonly IMangerServices<AnimeCategory> animeCategoriesService;
 
-        public CategoriesController(Context context)
+        public CategoriesController(IMangerServices<Anime> animeService,IMangerServices<Category> categoryService,IMangerServices<AnimeCategory> animeCategoriesService)
         {
-            _context = context;
+            this.animeService = animeService;
+            this.categoryService = categoryService;
+            this.animeCategoriesService = animeCategoriesService;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await categoryService.GetAll());
         }
         [AllowAnonymous]
         public async Task<IActionResult> AllCategories()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await categoryService.GetAll());
         }
         [AllowAnonymous]
-        public IActionResult CategoryAnime(int id) {
+        public async Task< IActionResult> CategoryAnime(int id) {
 
-            var getCat = _context.Categories.FirstOrDefault(oo=>oo.ID==id);
+            var getCat = await categoryService.GetDetails(id);
             ViewBag.catName = getCat.Name;
-            var getAnimes = _context.AnimeCategories.Where(oo=>oo.CategoryID==id);
+            var getAnime = await animeCategoriesService.GetAll();
+            var getAnimes = getAnime.Where(oo=>oo.CategoryID==id);
             List<Anime> animes = new List<Anime>();
             foreach (var item in getAnimes)
             {
-                var anime = _context.Anime.FirstOrDefault(oo => oo.ID == item.AnimeID);
+                var anime =await animeService.GetDetails( item.AnimeID);
                 animes.Add(anime);
             }
             
@@ -48,15 +54,10 @@ namespace ASPProject.Controllers
         }
 
         // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.ID == id);
+       
+            var category = await categoryService.GetDetails(id);
             if (category == null)
             {
                 return NotFound();
@@ -80,22 +81,18 @@ namespace ASPProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                
+                await categoryService.Insert(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
 
         // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await categoryService.GetDetails(id);
             if (category == null)
             {
                 return NotFound();
@@ -119,8 +116,8 @@ namespace ASPProject.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                   
+                    await categoryService.Update(category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,15 +136,10 @@ namespace ASPProject.Controllers
         }
 
         // GET: Categories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var category = await categoryService.GetDetails(id);
             if (category == null)
             {
                 return NotFound();
@@ -161,26 +153,25 @@ namespace ASPProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            await categoryService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.ID == id);
+        { 
+            return  categoryService.GetAllNotAsync().Any(e => e.ID == id);
         }
 
         public async Task<IActionResult> AddAnimes(int id)
         {
-            var cat = _context.Categories.Find(id);
-            var x = _context.AnimeCategories.Where(oo => oo.CategoryID == id).ToList();
+            var cat = await categoryService.GetDetails(id);
+            var z = await animeCategoriesService.GetAll();
+            var x =  z.Where(oo => oo.CategoryID == id).ToList();
             List<Anime> Memberanimes = new List<Anime>();
             List<GetCatAnimes> animes = new List<GetCatAnimes>();
             foreach (var item in x)
             {
-                var y = _context.Anime.Find(item.AnimeID);
+                var y =await animeService.GetDetails(item.AnimeID);
                 if (y != null)
                 {
                     var obj = new GetCatAnimes();
@@ -195,7 +186,7 @@ namespace ASPProject.Controllers
                 }
 
             }
-            var notIn = await _context.Anime.ToListAsync();
+            var notIn = await animeService.GetAll();
             var NonMemberanimes = notIn.Except(Memberanimes).ToList();
             foreach (var item in NonMemberanimes)
             {
@@ -212,7 +203,7 @@ namespace ASPProject.Controllers
         }
 
         [HttpPost]
-        public  ActionResult AddAnimes( List< GetCatAnimes> model)
+        public async Task< ActionResult> AddAnimes( List<GetCatAnimes> model)
         {
            // int Catid =int.Parse( model[0].CatID);
             for(int i=0; i< model.Count;  i++)
@@ -222,17 +213,16 @@ namespace ASPProject.Controllers
                     AnimeID = int.Parse(model[i].AnimeID),
                     CategoryID = int.Parse(model[i].CatID)
                 };
-                var obj = _context.AnimeCategories.AsNoTracking().FirstOrDefault(oo=>oo.AnimeID==x.AnimeID&& oo.CategoryID==x.CategoryID);
-
+                //var obj = _context.AnimeCategories.AsNoTracking().FirstOrDefault(oo=>oo.AnimeID==x.AnimeID&& oo.CategoryID==x.CategoryID);
+                var ob = await animeCategoriesService.GetAll();
+                var obj=  ob.FirstOrDefault(oo => oo.AnimeID == x.AnimeID && oo.CategoryID == x.CategoryID);
                 if (model[i].IsSelected && obj==null ) {
-                    _context.AnimeCategories.Add(x);
+                   await animeCategoriesService.Insert(x);
                 }
                 else if (! model[i].IsSelected && obj != null) {
                    
-                    _context.AnimeCategories.Remove(x);
+                    await animeCategoriesService.Delete(x.AnimeID,x.CategoryID);
                 }
-
-                _context.SaveChanges();
             }
 
             return RedirectToAction("");
