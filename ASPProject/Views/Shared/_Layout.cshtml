@@ -10,49 +10,58 @@
 </head>
 <body>
     
-<header>
+    <header>
+        @{ 
+                        var user = await usermanager.GetUserAsync(User);
+                        var prem = user.isPermium;
+                        var inRole = await usermanager.IsInRoleAsync(user, "Admin");
 
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-danger border-bottom box-shadow mb-3 text-white">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><span style="color:goldenrod">AnimeList</span> </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-white " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-danger border-bottom box-shadow mb-3 text-white">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><span style="color:goldenrod">AnimeList</span> </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                                <ul class="navbar-nav flex-grow-1">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                    </li>
+                                    @if (!inRole)
+                                    {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Categories" asp-action="AllCategories">Categories</a>
+                                </li>}
+                                    @if (User.Identity.IsAuthenticated && !inRole)
+                                    {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Animes" asp-action="MyList">My Anime List</a>
+                                </li>
+}
 
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-area="" asp-controller="Categories" asp-action="AllCategories">Categories</a>
-                    </li>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-        <li class="nav-item">
-            <a class="nav-link text-white" asp-area="" asp-controller="Animes" asp-action="MyList">My Anime List</a>
-        </li>
-                    }
-                    @if (User.Identity.IsAuthenticated)
-                    {
-
-                       var user = await usermanager.GetUserAsync(User);
-                       var prem = user.isPermium;
-                    @if (!prem)
-                    {
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-area="" asp-action="Index" asp-controller="Premium">Go <span style="color:goldenrod">Premuim </span>Now!</a>
-                    </li>
-                    }
-                    }
-                    
-                </ul>
-            </div>
-            <partial name="_LoginPartial.cshtml" />
-        </div>
-    </nav>
-</header>
+                                    @if (User.Identity.IsAuthenticated && !prem && !inRole)
+                                    {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-action="Index" asp-controller="Premium">Go <span style="color:goldenrod">Premuim </span>Now!</a>
+                                </li>}
+                                    @if (inRole) { 
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" asp-area="" asp-action="listroles" asp-controller="administration">Roles </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" asp-area="" asp-action="Index" asp-controller="Animes">Anime </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" asp-area="" asp-action="Index" asp-controller="Categories">Categories</a>
+                                    </li>
+                                    }
+                                </ul>
+                    </div>
+                    <partial name="_LoginPartial.cshtml" />
+                </div>
+            </nav> }
+    </header>
     
             <div class="container">
                 <main role="main" class="pb-3">
