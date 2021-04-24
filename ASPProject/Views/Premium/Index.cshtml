@@ -1,10 +1,14 @@
 ﻿@using Microsoft.Extensions.Options
 @inject IOptions<ASPProject.Models.StripeSettings> Stripe
+@inject UserManager<ApplicationUser> usermanager
 @{
     ViewData["Title"] = "Index";
 }
 
-
+@{ 
+    var user = await usermanager.GetUserAsync(User);
+    if (!user.isPermium)
+    {
 <div class="text-center">
     <p>@ViewBag.ID</p>
     <form asp-action="Charge" asp-controller="Premium" method="post">
@@ -18,4 +22,9 @@
                 data-local="auto"
                 data-description="Premium Package"></script>
     </form>
-</div>
+</div>      }
+            else
+            {
+                <div class="text-center text-success"><h2>Congrats You Are Premuim Now </h2> </div>
+            }
+    }

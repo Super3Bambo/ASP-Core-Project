@@ -62,7 +62,7 @@ namespace ASPProject.Controllers
                 CurUser.isPermium = true;
                 CurUser.PremiumExpiration = DateTime.Now.AddDays(30);
                 await user.UpdateAsync(CurUser);
-                return Redirect("/Home/Index");
+                return   RedirectToAction("");
             }
             else
             {
